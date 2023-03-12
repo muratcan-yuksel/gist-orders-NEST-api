@@ -8,8 +8,9 @@ import { User, UserDocument } from './schemas/user.schema';
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
-  create(createUserDto: CreateUserDto) {
-    const createdUser = new this.userModel(createUserDto);
+
+  create(name: string, password: string) {
+    const createdUser = new this.userModel({ name, password });
     return createdUser.save();
   }
 
@@ -19,6 +20,10 @@ export class UsersService {
 
   async findOne(id: number) {
     return this.userModel.findOne({ _id: id }).exec();
+  }
+
+  async findOneByName(name: string) {
+    return this.userModel.findOne({ name }).exec();
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
