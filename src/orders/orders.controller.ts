@@ -47,7 +47,7 @@ export class OrdersController {
     return this.ordersService.findAll();
   }
 
-  @Get(':id/download')
+  @Get('download/:id')
   getFile(@Param('id') id: string): Promise<StreamableFile> {
     // const file = createReadStream(join(process.cwd(), 'package.json'));
     // return new StreamableFile(file);
