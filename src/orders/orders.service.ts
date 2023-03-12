@@ -10,8 +10,12 @@ export class OrdersService {
   constructor(
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
   ) {}
-  create(createOrderDto: CreateOrderDto) {
-    return 'This action adds a new order';
+
+  create(createOrderDto: CreateOrderDto, file: string) {
+    // here you can access the uploaded file using the 'file' parameter
+    // and attach it to the order object before saving it to the database
+    const order = { ...createOrderDto, file };
+    return this.orderModel.create(order);
   }
 
   findAll() {
