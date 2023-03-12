@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, StreamableFile } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { OrderDocument, Order } from './schemas/order.schema';
 import { Model } from 'mongoose';
+import { createReadStream, readFileSync } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class OrdersService {
@@ -22,8 +24,14 @@ export class OrdersService {
     return this.orderModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async getFile(id: string): Promise<StreamableFile> {
+    const order = await this.findOne(id);
+    const file = createReadStream(join(process.cwd(), order.file));
+    return new StreamableFile(file);
+  }
+
+  findOne(_id: string) {
+    return this.orderModel.findOne({ _id }).exec();
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {

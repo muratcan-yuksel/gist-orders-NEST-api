@@ -11,11 +11,15 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  Res,
+  StreamableFile,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { createReadStream } from 'fs';
+import { join } from 'path';
 
 @Controller('orders')
 export class OrdersController {
@@ -43,9 +47,16 @@ export class OrdersController {
     return this.ordersService.findAll();
   }
 
+  @Get(':id/download')
+  getFile(@Param('id') id: string): Promise<StreamableFile> {
+    // const file = createReadStream(join(process.cwd(), 'package.json'));
+    // return new StreamableFile(file);
+    return this.ordersService.getFile(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.ordersService.findOne(+id);
+    return this.ordersService.findOne(id);
   }
 
   @Patch(':id')
